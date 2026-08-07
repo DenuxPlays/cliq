@@ -99,7 +99,7 @@ jobs:
       - name: Download installer artifacts
         uses: actions/download-artifact@v8
         with:
-          pattern: "*-installer"
+          pattern: "cliq*"
           path: artifacts
           merge-multiple: true
 
