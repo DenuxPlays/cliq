@@ -41,14 +41,17 @@ jobs:
       - name: Validate semantic version
         env:
           VERSION: ${{ inputs.version }}
+        # We use php here since bash regex is not pcre compliant
         run: |
-          # Semver regex from https://semver.org/
-          SEMVER_REGEX='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+          php -r '
+            $version = getenv("VERSION");
+            $regex = "/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/";
 
-          if [[ ! "$VERSION" =~ $SEMVER_REGEX ]]; then
-            echo "::error::'$VERSION' is not a valid semantic version."
-            exit 1
-          fi
+            if (!preg_match($regex, $version)) {
+                fwrite(STDERR, "::error::\"$version\" is not a valid semantic version.\n");
+                exit(1);
+            }
+          '
 
           echo "Version '$VERSION' is valid."
 
