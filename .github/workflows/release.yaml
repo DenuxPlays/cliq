@@ -104,6 +104,6 @@ jobs:
         with:
           draft: true
           generate_release_notes: true
-          tag_name: ${{ inputs.version }}
+          tag_name: v${{ inputs.version }}
           prerelease: ${{ inputs.is-beta-release }}
           files: artifacts/*

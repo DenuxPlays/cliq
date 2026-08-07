@@ -96,7 +96,7 @@ dependencies {
     implementation("com.nimbusds:srp6a:2.1.0")
 
     // Algorithm Provider & Encryption primitives
-    implementation("org.bouncycastle:bcprov-jdk18on:1.85")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.85.2")
 
     // Serialization
     implementation("org.springframework.boot:spring-boot-starter-jackson")
@@ -140,7 +140,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 
     // Greenmail
-    val greenmailVersion = "2.1.11"
+    val greenmailVersion = "2.1.12"
     testImplementation("com.icegreen:greenmail-spring:$greenmailVersion")
     testImplementation("com.icegreen:greenmail:$greenmailVersion")
     testImplementation("com.icegreen:greenmail-junit5:$greenmailVersion")
