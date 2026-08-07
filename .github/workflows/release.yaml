@@ -94,6 +94,7 @@ jobs:
     needs: build-frontend-installer
     permissions:
       contents: write
+      actions: read
     steps:
       - name: Download installer artifacts
         uses: actions/download-artifact@v8
@@ -101,6 +102,9 @@ jobs:
           pattern: "*-installer"
           path: artifacts
           merge-multiple: true
+
+      - name: Debug artifacts
+        run: find artifacts -type f -ls
 
       - name: Create draft release
         uses: softprops/action-gh-release@v3
