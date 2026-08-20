@@ -30,7 +30,7 @@ jobs:
         with:
           cache-disabled: true
       - name: Run detekt
-        run: ./gradlew bootJar
+        run: ./gradlew bootJar --no-daemon
       - name: Upload Jar
         if: ${{ inputs.upload-jar }}
         uses: actions/upload-artifact@v7
