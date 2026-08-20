@@ -89,7 +89,7 @@ jobs:
       actions: read
 
   build-backend:
-    name: Build frontend installer
+    name: Build backend
     uses: ./.github/workflows/backend-build.yaml
     with:
       build-jar: true
