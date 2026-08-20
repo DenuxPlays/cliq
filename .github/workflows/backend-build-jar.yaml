@@ -37,4 +37,5 @@ jobs:
         with:
           name: backend-jar
           path: backend/build/libs/*.jar
+          archive: false
           if-no-files-found: error
