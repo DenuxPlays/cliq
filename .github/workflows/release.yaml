@@ -88,10 +88,28 @@ jobs:
       contents: write
       actions: read
 
+  build-backend:
+    name: Build frontend installer
+    uses: ./.github/workflows/backend-build.yaml
+    with:
+      build-jar: true
+      build-docker: false
+      upload-jar: true
+    needs: checks-passed
+    permissions:
+      contents: write
+      actions: read
+
+  builds-passed:
+    needs: [ build-frontend-installer, build-backend ]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "All builds passed"
+
   release:
     name: Create release
     runs-on: ubuntu-latest
-    needs: build-frontend-installer
+    needs: builds-passed
     permissions:
       contents: write
       actions: read
