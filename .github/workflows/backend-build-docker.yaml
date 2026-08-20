@@ -1,25 +1,10 @@
-name: "Backend: Build"
+name: "Backend: Build Docker"
 on:
   pull_request:
     branches:
       - main
     paths:
       - "backend/**"
-
-  workflow_call:
-    inputs:
-      build-jar:
-        type: boolean
-        required: false
-        default: true
-      build-docker:
-        type: boolean
-        required: false
-        default: false
-      upload-jar:
-        type: boolean
-        required: false
-        default: false
 
 defaults:
   run:
@@ -29,7 +14,6 @@ jobs:
   build-docker:
     name: Build (${{ matrix.variant }} / ${{ matrix.platform }})
     runs-on: ${{ matrix.os }}
-    if: ${{ github.event_name == 'pull_request' || inputs.build-docker }}
     permissions:
       contents: read
     strategy:
@@ -69,31 +53,3 @@ jobs:
           file: ${{ matrix.dockerfile }}
           platforms: ${{ matrix.platform }}
           push: false
-
-  build-jar:
-    name: Build Jar
-    runs-on: ubuntu-24.04
-    if: ${{ github.event_name == 'pull_request' || inputs.build-jar }}
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: Set up Java
-        uses: actions/setup-java@v5
-        with:
-          java-version: "26"
-          distribution: "temurin"
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          cache-disabled: true
-      - name: Run detekt
-        run: ./gradlew bootJar
-      - name: Upload Jar
-        if: ${{ inputs.upload-jar }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: backend-jar
-          path: backend/build/libs/*.jar
-          if-no-files-found: error

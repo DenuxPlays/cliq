@@ -90,10 +90,8 @@ jobs:
 
   build-backend:
     name: Build backend
-    uses: ./.github/workflows/backend-build.yaml
+    uses: ./.github/workflows/backend-build-jar.yaml
     with:
-      build-jar: true
-      build-docker: false
       upload-jar: true
     needs: checks-passed
     permissions:
