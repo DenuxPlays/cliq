@@ -1,43 +1,32 @@
 import 'dart:io';
 
-import 'package:cliq/modules/settings/view/create_or_edit_terminal_theme_view.dart';
+import 'package:cliq/modules/settings/provider/terminal_theme_service.provider.dart';
+import 'package:cliq/modules/settings/ui/create_or_edit_terminal_theme_sheet.dart';
 import 'package:cliq/shared/data/database.dart';
 import 'package:cliq/shared/ui/context_menu.dart';
+import 'package:cliq/shared/ui/title_card.dart';
+import 'package:cliq/shared/utils/commons.dart';
 import 'package:cliq_term/cliq_term.dart';
-import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:forui_hooks/forui_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_flutter/lucide_flutter.dart';
 
-import '../../../shared/ui/title_card.dart';
-import '../../../shared/utils/commons.dart';
-import '../provider/terminal_theme_service.provider.dart';
-
-class TerminalThemeCard extends HookConsumerWidget {
-  final CustomTerminalTheme theme;
-  final void Function() onTap;
-  final bool isSelected;
-
-  final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
-
-  const TerminalThemeCard({
-    super.key,
-    required this.theme,
-    required this.onTap,
-    this.isSelected = false,
-    this.onEdit,
-    this.onDelete,
-  });
-
+class const TerminalThemeCard({
+  super.key,
+  required final CustomTerminalTheme theme,
+  required final void Function() onTap,
+  final bool isSelected = false,
+  final VoidCallback? onEdit,
+  final VoidCallback? onDelete,
+}) extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final primaryPopoverController = useFPopoverController();
     final secondaryPopoverController = useFPopoverController();
 
-    final isBuiltIn = theme.id == "-1";
+    final isBuiltIn = theme.id == '-1';
 
     buildColor(Color color) {
       return Container(width: 8, height: 16, color: color);
@@ -49,30 +38,28 @@ class TerminalThemeCard extends HookConsumerWidget {
 
       final copyInsert = CustomTerminalThemesCompanion.insert(
         name: '${theme.name} - Copy',
-        blackColor: theme.blackColor,
-        redColor: theme.redColor,
-        greenColor: theme.greenColor,
-        yellowColor: theme.yellowColor,
-        blueColor: theme.blueColor,
-        purpleColor: theme.purpleColor,
-        cyanColor: theme.cyanColor,
-        whiteColor: theme.whiteColor,
-        brightBlackColor: theme.brightBlackColor,
-        brightRedColor: theme.brightRedColor,
-        brightGreenColor: theme.brightGreenColor,
-        brightYellowColor: theme.brightYellowColor,
-        brightBlueColor: theme.brightBlueColor,
-        brightPurpleColor: theme.brightPurpleColor,
-        brightCyanColor: theme.brightCyanColor,
-        brightWhiteColor: theme.brightWhiteColor,
-        backgroundColor: theme.backgroundColor,
-        foregroundColor: theme.foregroundColor,
-        cursorColor: theme.cursorColor,
-        selectionBackgroundColor: theme.selectionBackgroundColor,
-        selectionForegroundColor: Value.absentIfNull(
-          theme.selectionForegroundColor,
-        ),
-        cursorTextColor: Value.absentIfNull(theme.cursorTextColor),
+        black: theme.black,
+        red: theme.red,
+        green: theme.green,
+        yellow: theme.yellow,
+        blue: theme.blue,
+        purple: theme.purple,
+        cyan: theme.cyan,
+        white: theme.white,
+        brightBlack: theme.brightBlack,
+        brightRed: theme.brightRed,
+        brightGreen: theme.brightGreen,
+        brightYellow: theme.brightYellow,
+        brightBlue: theme.brightBlue,
+        brightPurple: theme.brightPurple,
+        brightCyan: theme.brightCyan,
+        brightWhite: theme.brightWhite,
+        background: theme.background,
+        foreground: theme.foreground,
+        cursor: theme.cursor,
+        cursorText: theme.cursorText,
+        selectionBackground: theme.selectionBackground,
+        selectionForeground: theme.selectionForeground,
       );
 
       await ref
@@ -85,8 +72,8 @@ class TerminalThemeCard extends HookConsumerWidget {
       await secondaryPopoverController.hide();
       if (!context.mounted) return;
 
-      return Commons.showResponsiveDialog(
-        (_) => CreateOrEditTerminalThemeView.edit(theme),
+      return Commons.showResponsiveSheet(
+        (_) => CreateOrEditTerminalThemeSheet.edit(theme),
         context: context,
       ).then((_) => onEdit?.call());
     }
@@ -114,19 +101,20 @@ class TerminalThemeCard extends HookConsumerWidget {
           FItemGroup(
             children: [
               FItem(
-                prefix: Icon(LucideIcons.copy),
-                title: Text('Duplicate'),
+                prefix: const Icon(LucideIcons.copy),
+                title: const Text('Duplicate'),
                 onPress: duplicate,
               ),
               if (!isBuiltIn) ...[
                 FItem(
-                  prefix: Icon(LucideIcons.pencil),
-                  title: Text('Edit'),
+                  prefix: const Icon(LucideIcons.pencil),
+                  title: const Text('Edit'),
                   onPress: edit,
                 ),
                 FItem(
-                  prefix: Icon(LucideIcons.trash),
-                  title: Text('Delete'),
+                  prefix: const Icon(LucideIcons.trash),
+                  title: const Text('Delete'),
+                  variant: .destructive,
                   onPress: delete,
                 ),
               ],
@@ -172,52 +160,55 @@ class TerminalThemeCard extends HookConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        theme.redColor,
-                        theme.greenColor,
-                        theme.yellowColor,
-                        theme.blueColor,
-                        theme.purpleColor,
-                        theme.cyanColor,
-                        theme.whiteColor,
+                        theme.black,
+                        theme.red,
+                        theme.green,
+                        theme.yellow,
+                        theme.blue,
+                        theme.purple,
+                        theme.cyan,
+                        theme.white,
                       ].map(buildColor).toList(),
                     ),
                     Row(
                       children: [
-                        theme.brightRedColor,
-                        theme.brightGreenColor,
-                        theme.brightYellowColor,
-                        theme.brightBlueColor,
-                        theme.brightPurpleColor,
-                        theme.brightCyanColor,
-                        theme.brightWhiteColor,
+                        theme.brightBlack,
+                        theme.brightRed,
+                        theme.brightGreen,
+                        theme.brightYellow,
+                        theme.brightBlue,
+                        theme.brightPurple,
+                        theme.brightCyan,
+                        theme.brightWhite,
                       ].map(buildColor).toList(),
                     ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(theme.name),
-                    if (theme.id == '-1')
-                      Text(
-                        'built-in',
-                        style: context.theme.typography.body.xs.copyWith(
-                          color: context.theme.colors.mutedForeground,
-                          fontWeight: .normal,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(theme.name),
+                      if (theme.id == '-1')
+                        Text(
+                          'built-in',
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                            fontWeight: .normal,
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-                const Spacer(),
-                if (isSelected) Icon(LucideIcons.check),
+                if (isSelected) const Icon(LucideIcons.check),
                 buildPopoverMenu(
                   controller: secondaryPopoverController,
                   child: FButton.icon(
-                    onPress: () {
-                      secondaryPopoverController.toggle();
-                      primaryPopoverController.hide();
+                    onPress: () async {
+                      await secondaryPopoverController.toggle();
+                      await primaryPopoverController.hide();
                     },
-                    child: Icon(LucideIcons.ellipsis),
+                    child: const Icon(LucideIcons.ellipsis),
                   ),
                 ),
               ],

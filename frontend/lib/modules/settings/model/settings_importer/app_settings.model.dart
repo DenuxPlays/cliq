@@ -1,36 +1,39 @@
+import 'package:cliq/modules/connections/extension/connections_companion.extension.dart';
+import 'package:cliq/modules/credentials/extension/credentials_companion.extension.dart';
+import 'package:cliq/modules/identities/extension/identities_companion.extension.dart';
+import 'package:cliq/modules/keys/extension/keys_companion.extension.dart';
+import 'package:cliq/modules/settings/extension/custom_terminal_themes_companion.extension.dart';
+import 'package:cliq/modules/settings/extension/known_hosts_companion.extension.dart';
 import 'package:cliq/shared/data/database.dart';
-
-import '../../../connections/extension/connections_companion.extension.dart';
-import '../../../credentials/extension/credentials_companion.extension.dart';
-import '../../../identities/extension/identities_companion.extension.dart';
-import '../../../keys/extension/keys_companion.extension.dart';
-import '../../extension/known_hosts_companion.extension.dart';
 
 /// Data class representing the app settings for import/export operations and synchronization.
 class AppSettings {
   final List<ConnectionsCompanion>? connections;
   final List<IdentitiesCompanion>? identities;
   final List<KnownHostsCompanion>? knownHosts;
+  final List<CustomTerminalThemesCompanion>? customTerminalThemes;
   final List<CredentialsCompanion>? credentials;
   final List<KeysCompanion>? keys;
 
   final Map<DbId, List<DbId>>? connectionsCredentialIds;
   final Map<DbId, List<DbId>>? identitiesCredentialIds;
 
-  const AppSettings({
+  const new({
     required this.connections,
     required this.identities,
     required this.knownHosts,
+    required this.customTerminalThemes,
     required this.credentials,
     required this.keys,
     required this.connectionsCredentialIds,
     required this.identitiesCredentialIds,
   });
 
-  const AppSettings.empty()
+  const new empty()
     : connections = null,
       identities = null,
       knownHosts = null,
+      customTerminalThemes = null,
       credentials = null,
       keys = null,
       connectionsCredentialIds = null,
@@ -61,6 +64,10 @@ class AppSettings {
       ),
       identities: parse(IdentitiesCompanionExtension.tryFromJson, 'identities'),
       knownHosts: parse(KnownHostsCompanionExtension.tryFromJson, 'knownHosts'),
+      customTerminalThemes: parse(
+        CustomTerminalThemesCompanionExtension.tryFromJson,
+        'customTerminalThemes',
+      ),
       credentials: parse(
         CredentialsCompanionExtension.tryFromJson,
         'credentials',
@@ -75,6 +82,7 @@ class AppSettings {
       (connections == null || connections!.isEmpty) &&
       (identities == null || identities!.isEmpty) &&
       (knownHosts == null || knownHosts!.isEmpty) &&
+      (customTerminalThemes == null || customTerminalThemes!.isEmpty) &&
       (credentials == null || credentials!.isEmpty) &&
       (keys == null || keys!.isEmpty);
 
@@ -87,16 +95,20 @@ class AppSettings {
         'connections': connections!.map((c) => c.toJson()).toList(),
       if (connectionsCredentialIds?.isNotEmpty == true)
         'connectionCredentialIds': connectionsCredentialIds!.map(
-          (k, v) => .new(k.toString(), v),
+          (k, v) => .new(k, v),
         ),
       if (identities?.isNotEmpty == true)
         'identities': identities!.map((i) => i.toJson()).toList(),
       if (identitiesCredentialIds?.isNotEmpty == true)
         'identityCredentialIds': identitiesCredentialIds!.map(
-          (k, v) => .new(k.toString(), v),
+          (k, v) => .new(k, v),
         ),
       if (knownHosts?.isNotEmpty == true)
         'knownHosts': knownHosts!.map((k) => k.toJson()).toList(),
+      if (customTerminalThemes?.isNotEmpty == true)
+        'customTerminalThemes': customTerminalThemes!
+            .map((t) => t.toJson())
+            .toList(),
       if (credentials?.isNotEmpty == true)
         'credentials': credentials!.map((c) => c.toJson()).toList(),
       if (keys?.isNotEmpty == true)

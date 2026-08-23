@@ -1,11 +1,12 @@
 import 'dart:convert';
 
-import 'package:cliq/shared/ui/horizontal_dialog.dart';
 import 'package:cliq/modules/settings/model/settings_importer/settings_importer.dart';
 import 'package:cliq/modules/settings/model/theme_parser/terminal_theme_parser.dart';
-import 'package:cliq/shared/ui/responsive_dialog.dart';
-import 'package:cliq/shared/utils/constants.dart';
+import 'package:cliq/shared/model/localized_exception.dart';
 import 'package:cliq/shared/model/router.model.dart';
+import 'package:cliq/shared/ui/horizontal_dialog.dart';
+import 'package:cliq/shared/ui/responsive_sheet.dart';
+import 'package:cliq/shared/utils/constants.dart';
 import 'package:cliq/shared/utils/platform_utils.dart';
 import 'package:cliq/shared/utils/text_utils.dart';
 import 'package:cliq_api/cliq_api.dart';
@@ -18,7 +19,7 @@ import 'package:lucide_flutter/lucide_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final class Commons {
-  const Commons._();
+  const new _();
 
   static XTypeGroup getCustomTerminalThemeGroup(BuildContext context) {
     return XTypeGroup(
@@ -51,12 +52,12 @@ final class Commons {
   static XTypeGroup getKeyGroup(BuildContext context) {
     return XTypeGroup(
       label: 'file_groups.key'.tr(context: context),
-      uniformTypeIdentifiers: [],
-      extensions: [],
+      uniformTypeIdentifiers: const [],
+      extensions: const [],
     );
   }
 
-  static Future<T?> showResponsiveDialog<T>(
+  static Future<T?> showResponsiveSheet<T>(
     WidgetBuilder builder, {
     required BuildContext? context,
     bool dismissable = true,
@@ -68,7 +69,7 @@ final class Commons {
       mainAxisMaxRatio: 1,
       draggable: false,
       barrierDismissible: dismissable,
-      builder: (context) => ResponsiveDialog(child: builder(context)),
+      builder: (context) => ResponsiveSheet(child: builder(context)),
     );
   }
 
@@ -180,7 +181,17 @@ final class Commons {
   static Future<void> showCliqException(CliqException exception) async {
     return showToast(
       'api_error_codes.${exception.errorCode}'.tr(),
-      prefix: Icon(LucideIcons.alertCircle),
+      prefix: const Icon(LucideIcons.alertCircle),
+      variant: .destructive,
+    );
+  }
+
+  static Future<void> showLocalizedException(
+    LocalizedException exception,
+  ) async {
+    return showToast(
+      exception.tr(),
+      prefix: const Icon(LucideIcons.alertCircle),
       variant: .destructive,
     );
   }
