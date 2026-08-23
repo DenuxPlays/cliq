@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
 
     // Spring / Spring Boot
     id("org.springframework.boot") version "4.1.1"
@@ -42,7 +43,6 @@ java {
 }
 
 kotlin {
-    compilerOptions.freeCompilerArgs.add("-Xannotation-default-target=param-property")
     jvmToolchain(targetJvmVersion)
 }
 
@@ -117,6 +117,7 @@ dependencies {
 
     // Annotations
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     // Kotlin specifics
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -125,6 +126,7 @@ dependencies {
     implementation("commons-io:commons-io:2.22.0")
 
     // Testing //
+    testImplementation(kotlin("test"))
 
     // Junit 5
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -140,7 +142,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 
     // Greenmail
-    val greenmailVersion = "2.1.12"
+    val greenmailVersion = "2.1.13"
     testImplementation("com.icegreen:greenmail-spring:$greenmailVersion")
     testImplementation("com.icegreen:greenmail:$greenmailVersion")
     testImplementation("com.icegreen:greenmail-junit5:$greenmailVersion")
